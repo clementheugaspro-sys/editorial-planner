@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau éditorial — ActiveScale</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f3;
+    --bg-tertiary: #efefed;
+    --text-primary: #1a1a18;
+    --text-secondary: #6b6b67;
+    --text-tertiary: #9b9b96;
+    --border-light: rgba(0,0,0,0.1);
+    --border-mid: rgba(0,0,0,0.18);
+    --border-strong: rgba(0,0,0,0.28);
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --teal-mid: #5DCAA5;
+    --teal-dark: #085041;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #1a1a18;
+      --bg-secondary: #242422;
+      --bg-tertiary: #2e2e2c;
+      --text-primary: #f0f0ee;
+      --text-secondary: #9b9b96;
+      --text-tertiary: #6b6b67;
+      --border-light: rgba(255,255,255,0.08);
+      --border-mid: rgba(255,255,255,0.14);
+      --border-strong: rgba(255,255,255,0.22);
+      --teal-light: rgba(29,158,117,0.15);
+      --teal-dark: #9FE1CB;
+    }
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+  .container { max-width: 780px; margin: 0 auto; }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; }
+  .logo-dot i { color: #fff; font-size: 14px; }
+  .logo-title { font-size: 16px; font-weight: 500; color: var(--text-primary); }
+  .logo-sub { font-size: 11px; color: var(--text-secondary); }
+  .week-nav { display: flex; align-items: center; gap: 8px; }
+  .week-nav button { background: var(--bg-primary); border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); padding: 7px 11px; cursor: pointer; color: var(--text-primary); font-size: 14px; transition: background 0.12s; }
+  .week-nav button:hover { background: var(--bg-secondary); }
+  .week-label { font-size: 13px; color: var(--text-secondary); min-width: 180px; text-align: center; }
+  .week-badge { font-size: 10px; background: var(--teal); color: #fff; padding: 2px 7px; border-radius: 20px; margin-left: 6px; }
+  .stats-bar { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 1rem; }
+  .stat { background: var(--bg-primary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); padding: 12px 16px; }
+  .stat-val { font-size: 24px; font-weight: 500; color: var(--text-primary); }
+  .stat-lbl { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .prog-wrap { margin-bottom: 1.25rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-bottom: 5px; }
+  .prog-bar { height: 5px; background: var(--bg-secondary); border-radius: 3px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--teal); border-radius: 3px; transition: width 0.3s ease; }
+  .platform { background: var(--bg-primary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); margin-bottom: 10px; overflow: hidden; }
+  .plat-head { display: flex; align-items: center; gap: 8px; padding: 9px 14px; background: var(--bg-secondary); border-bottom: 0.5px solid var(--border-light); }
+  .plat-head i { font-size: 15px; color: var(--text-secondary); }
+  .plat-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .plat-pct { margin-left: auto; font-size: 11px; color: var(--text-secondary); }
+  .plat-pct.done { color: var(--teal); font-weight: 500; }
+  .post-row { display: grid; grid-template-columns: 105px 1fr; border-bottom: 0.5px solid var(--border-light); }
+  .post-row:last-child { border-bottom: none; }
+  .post-day { padding: 9px 12px; font-size: 12px; color: var(--text-secondary); border-right: 0.5px solid var(--border-light); display: flex; flex-direction: column; justify-content: center; }
+  .post-type { font-size: 10px; color: var(--text-tertiary); margin-top: 1px; }
+  .steps { display: flex; }
+  .step { flex: 1; display: flex; align-items: center; gap: 7px; padding: 9px 10px; cursor: pointer; border-right: 0.5px solid var(--border-light); transition: background 0.12s; user-select: none; }
+  .step:last-child { border-right: none; }
+  .step:hover { background: var(--bg-secondary); }
+  .step.on { background: var(--teal-light); }
+  .step.on .slbl { color: var(--teal-dark); }
+  .chk { width: 15px; height: 15px; min-width: 15px; border: 1.5px solid var(--border-mid); border-radius: 3px; display: flex; align-items: center; justify-content: center; transition: all 0.12s; }
+  .step.on .chk { background: var(--teal); border-color: var(--teal); }
+  .tick { display: none; color: #fff; font-size: 9px; font-weight: 600; }
+  .step.on .tick { display: block; }
+  .slbl { font-size: 11px; color: var(--text-tertiary); }
+  .hist-section { margin-top: 1.75rem; background: var(--bg-primary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); padding: 1rem 1.25rem; }
+  .hist-title { font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 1rem; }
+  .hist-grid { display: grid; grid-template-columns: repeat(8,1fr); gap: 6px; }
+  .hist-cell { border-radius: var(--radius-md); padding: 6px 4px; text-align: center; cursor: pointer; border: 0.5px solid var(--border-light); transition: border-color 0.12s; }
+  .hist-cell:hover { border-color: var(--border-strong); }
+  .hist-cell.active { border: 1.5px solid var(--teal); }
+  .hist-wk { font-size: 9px; color: var(--text-tertiary); margin-bottom: 4px; }
+  .hist-dot { height: 6px; border-radius: 3px; margin: 0 auto 4px; min-width: 4px; }
+  .hist-pct { font-size: 9px; color: var(--text-tertiary); }
+  .footer { text-align: center; margin-top: 2rem; font-size: 11px; color: var(--text-tertiary); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="top-bar">
+    <div class="logo">
+      <div class="logo-dot"><i class="ti ti-calendar-week"></i></div>
+      <div>
+        <div class="logo-title">Tableau éditorial</div>
+        <div class="logo-sub">ActiveScale</div>
+      </div>
+    </div>
+    <div class="week-nav">
+      <button onclick="changeWeek(-1)"><i class="ti ti-chevron-left"></i></button>
+      <span class="week-label" id="week-label"></span>
+      <button onclick="changeWeek(1)"><i class="ti ti-chevron-right"></i></button>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-val" id="s-done">0</div><div class="stat-lbl">étapes complétées</div></div>
+    <div class="stat"><div class="stat-val" id="s-pct">0%</div><div class="stat-lbl">taux de complétion</div></div>
+    <div class="stat"><div class="stat-val" id="s-posts">0</div><div class="stat-lbl">posts 100% prêts</div></div>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-meta"><span>Progression de la semaine</span><span id="prog-num">0 / 0</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div id="platforms"></div>
+  <div class="hist-section">
+    <div class="hist-title"><i class="ti ti-chart-bar" style="font-size:13px;vertical-align:-1px;margin-right:5px;"></i>Historique — 16 dernières semaines</div>
+    <div class="hist-grid" id="hist-grid"></div>
+  </div>
+  <div class="footer">Données sauvegardées localement dans ce navigateur · ActiveScale</div>
+</div>
+<script>
+const PLATFORMS = [
+  { id:'ig-as', name:'Instagram ActiveScale', icon:'ti-brand-instagram', posts:[
+    {id:'ig-as-lun', day:'Lundi', type:'Post'},
+    {id:'ig-as-mer', day:'Mercredi', type:'Post'},
+    {id:'ig-as-ven', day:'Vendredi', type:'Post'},
+    {id:'ig-as-ree', day:'Semaine', type:'Réels (1-2)'}
+  ]},
+  { id:'fb-p', name:'Facebook perso', icon:'ti-brand-facebook', posts:[
+    {id:'fb-p-mar', day:'Mardi', type:'Post'},
+    {id:'fb-p-jeu', day:'Jeudi', type:'Post'}
+  ]},
+  { id:'fb-as', name:'Facebook ActiveScale', icon:'ti-brand-facebook', posts:[
+    {id:'fb-as-lun', day:'Lundi', type:'Post'},
+    {id:'fb-as-mer', day:'Mercredi', type:'Post'},
+    {id:'fb-as-ven', day:'Vendredi', type:'Post'},
+    {id:'fb-as-vid', day:'Semaine', type:'Vidéos (1-2)'}
+  ]},
+  { id:'yt', name:'YouTube Shorts', icon:'ti-brand-youtube', posts:[
+    {id:'yt-ree', day:'Semaine', type:'Réels (2)'}
+  ]},
+  { id:'li-p', name:'LinkedIn perso', icon:'ti-brand-linkedin', posts:[
+    {id:'li-p-lun', day:'Lundi', type:'Post'},
+    {id:'li-p-mer', day:'Mercredi', type:'Post'},
+    {id:'li-p-ven', day:'Vendredi', type:'Post'}
+  ]},
+  { id:'li-as', name:'LinkedIn ActiveScale', icon:'ti-brand-linkedin', posts:[
+    {id:'li-as-sem', day:'Semaine', type:'Post'}
+  ]}
+];
+const STEPS = ['Rédigé','Visuel','Programmé'];
+let currentOffset = 0;
+function getMondayKey(offset) {
+  const now = new Date();
+  const day = now.getDay();
+  const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+  const mon = new Date(now);
+  mon.setDate(diff + offset * 7);
+  return mon.toISOString().slice(0, 10);
+}
+function weekLabel(key) {
+  const d = new Date(key + 'T00:00:00');
+  const end = new Date(d);
+  end.setDate(d.getDate() + 6);
+  const fmt = x => x.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+  return fmt(d) + ' – ' + fmt(end);
+}
+function getWeekNumber(key) {
+  const d = new Date(key + 'T00:00:00');
+  d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+  const w1 = new Date(d.getFullYear(), 0, 4);
+  return 1 + Math.round(((d - w1) / 86400000 - 3 + (w1.getDay() + 6) % 7) / 7);
+}
+function load(key) { try { return JSON.parse(localStorage.getItem('as_week_' + key) || '{}'); } catch(e) { return {}; } }
+function save(key, data) { try { localStorage.setItem('as_week_' + key, JSON.stringify(data)); } catch(e) {} }
+function getTotalSteps() { let t = 0; PLATFORMS.forEach(p => p.posts.forEach(() => t += 3)); return t; }
+function render() {
+  const key = getMondayKey(currentOffset);
+  const data = load(key);
+  const isCurrent = key === getMondayKey(0);
+  const wlEl = document.getElementById('week-label');
+  wlEl.innerHTML = weekLabel(key) + (isCurrent ? '<span class="week-badge">En cours</span>' : '');
+  const container = document.getElementById('platforms');
+  container.innerHTML = '';
+  const total = getTotalSteps();
+  let totalDone = 0, totalPosts = 0;
+  PLATFORMS.forEach(plat => {
+    let platDone = 0, platReady = 0;
+    const platTotal = plat.posts.length * 3;
+    const sec = document.createElement('div'); sec.className = 'platform';
+    const head = document.createElement('div'); head.className = 'plat-head';
+    head.innerHTML = `<i class="ti ${plat.icon}"></i><span class="plat-name">${plat.name}</span><span class="plat-pct" id="pct-${plat.id}"></span>`;
+    sec.appendChild(head);
+    plat.posts.forEach(post => {
+      const row = document.createElement('div'); row.className = 'post-row';
+      const dayCell = document.createElement('div'); dayCell.className = 'post-day';
+      dayCell.innerHTML = `<span>${post.day}</span><span class="post-type">${post.type}</span>`;
+      row.appendChild(dayCell);
+      const stepsEl = document.createElement('div'); stepsEl.className = 'steps';
+      let postDone = 0;
+      STEPS.forEach((lbl, si) => {
+        const stKey = post.id + '_s' + si;
+        const on = !!data[stKey];
+        if (on) { platDone++; totalDone++; postDone++; }
+        const s = document.createElement('div');
+        s.className = 'step' + (on ? ' on' : '');
+        s.innerHTML = `<div class="chk"><span class="tick">✓</span></div><span class="slbl">${lbl}</span>`;
+        s.onclick = () => { const d2 = load(getMondayKey(currentOffset)); d2[stKey] = !d2[stKey]; save(getMondayKey(currentOffset), d2); render(); };
+        stepsEl.appendChild(s);
+      });
+      if (postDone === 3) platReady++;
+      row.appendChild(stepsEl); sec.appendChild(row);
+    });
+    totalPosts += platReady;
+    const pct = platTotal > 0 ? Math.round(platDone / platTotal * 100) : 0;
+    const pctEl = sec.querySelector('#pct-' + plat.id);
+    pctEl.textContent = pct + '%';
+    if (pct === 100) pctEl.classList.add('done');
+    container.appendChild(sec);
+  });
+  document.getElementById('s-done').textContent = totalDone;
+  document.getElementById('s-pct').textContent = Math.round(totalDone / total * 100) + '%';
+  document.getElementById('s-posts').textContent = totalPosts;
+  document.getElementById('prog-num').textContent = totalDone + ' / ' + total;
+  document.getElementById('prog-fill').style.width = Math.round(totalDone / total * 100) + '%';
+  renderHist();
+}
+function renderHist() {
+  const grid = document.getElementById('hist-grid');
+  grid.innerHTML = '';
+  const currentKey = getMondayKey(currentOffset);
+  const total = getTotalSteps();
+  for (let i = 15; i >= 0; i--) {
+    const key = getMondayKey(-i);
+    const data = load(key);
+    let done = 0;
+    Object.values(data).forEach(v => { if (v) done++; });
+    const pct = total > 0 ? done / total : 0;
+    const dotColor = done === 0 ? 'var(--bg-tertiary)' : pct >= 0.9 ? '#1D9E75' : pct >= 0.5 ? '#5DCAA5' : '#9FE1CB';
+    const cell = document.createElement('div');
+    cell.className = 'hist-cell' + (key === currentKey ? ' active' : '');
+    cell.title = weekLabel(key) + ' — ' + Math.round(pct * 100) + '%';
+    cell.innerHTML = `<div class="hist-wk">S${getWeekNumber(key)}</div><div class="hist-dot" style="background:${dotColor};width:${Math.max(6, Math.round(pct * 28))}px;"></div><div class="hist-pct">${Math.round(pct * 100)}%</div>`;
+    cell.onclick = () => { currentOffset = -i; render(); };
+    grid.appendChild(cell);
+  }
+}
+function changeWeek(dir) { currentOffset += dir; render(); }
+render();
+</script>
+</body>
+</html>
